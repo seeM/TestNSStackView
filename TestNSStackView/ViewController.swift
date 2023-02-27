@@ -57,7 +57,6 @@ class TextEditor: NSScrollView {
         scrollView.documentView = textView
         
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.setContentCompressionResistancePriority(.required, for: .vertical)
         textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
         textView.trailingAnchor.constraint(greaterThanOrEqualTo: scrollView.trailingAnchor).isActive = true
         textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
