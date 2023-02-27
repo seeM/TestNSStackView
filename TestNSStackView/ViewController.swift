@@ -28,7 +28,7 @@ class BorderedTextView: NSTextView {
     }
 }
 
-class TextEditor: NSScrollView {
+class ScrollView: NSScrollView {
     public var textView: BorderedTextView
     
     override public init(frame frameRect: NSRect) {
@@ -44,7 +44,9 @@ class TextEditor: NSScrollView {
         scrollView.hasHorizontalScroller = false
         scrollView.horizontalScrollElasticity = .automatic
         scrollView.verticalScrollElasticity = .none
+        scrollView.drawsBackground = false
                 
+        textView.drawsBackground = false
         textView.isRichText = false
         textView.minSize = NSSize(width: 0, height: scrollView.bounds.height)
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
@@ -69,6 +71,37 @@ class TextEditor: NSScrollView {
     
     override var intrinsicContentSize: NSSize {
         return NSSize(width: -1, height: textView.intrinsicContentSize.width)
+    }
+}
+
+class TextEditor: NSView {
+    public var scrollView: ScrollView
+    
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        let path = NSBezierPath(roundedRect: bounds, xRadius: 7, yRadius: 7)
+        NSColor(red: 0, green: 0, blue: 0, alpha: 0.06).setFill()
+        path.fill()
+    }
+    
+    override init(frame frameRect: NSRect) {
+        scrollView = ScrollView()
+        super.init(frame: frameRect)
+        addSubview(scrollView)
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override var intrinsicContentSize: NSSize {
+        return NSSize(width: -1, height: scrollView.intrinsicContentSize.width)
     }
 }
 
@@ -102,10 +135,10 @@ class ViewController: NSViewController {
         let te1 = TextEditor()
         let te2 = TextEditor()
         let te3 = TextEditor()
-        te2.textView.isEditable = false
-        te3.textView.isEditable = false
-        te2.textView.string = "First\nSecond\nThird"
-        te3.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
+        te2.scrollView.textView.isEditable = false
+        te3.scrollView.textView.isEditable = false
+        te2.scrollView.textView.string = "First\nSecond\nThird"
+        te3.scrollView.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
         
         stackView.addArrangedSubview(te1)
         stackView.addArrangedSubview(te2)
