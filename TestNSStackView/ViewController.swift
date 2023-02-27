@@ -51,6 +51,8 @@ class TextEditor: NSScrollView {
         let scrollView = self
         let textView = scrollView.textView
         
+        scrollView.setContentCompressionResistancePriority(.fittingSizeCompression, for: .vertical)
+        
         scrollView.borderType = .noBorder
         scrollView.hasVerticalScroller = false
         scrollView.hasHorizontalScroller = false
@@ -73,13 +75,6 @@ class TextEditor: NSScrollView {
         textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
         textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-
-        scrollView.drawsBackground = true
-        scrollView.backgroundColor = NSColor(red: 1, green: 0, blue: 0, alpha: 1)
-        textView.drawsBackground = true
-        textView.backgroundColor = NSColor(red: 0, green: 1, blue: 0, alpha: 1)
-        textView.textStorage?.foregroundColor = .white
-
     }
     
     public required init?(coder: NSCoder) {
@@ -91,83 +86,43 @@ class TextEditor: NSScrollView {
     }
 }
 
-//class StackView: NSStackView {
-//    override init(frame frameRect: NSRect) {
-//        super.init(frame: frameRect)
-//        orientation = .vertical
-//        distribution = .gravityAreas
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//}
+class StackView: NSStackView {
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        orientation = .vertical
+        distribution = .gravityAreas
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
 class ViewController: NSViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        let stackView = StackView()
-////        view.addSubview(stackView)
-//
-//        stackView.wantsLayer = true
-//        stackView.layer?.backgroundColor = .init(red: 1, green: 0, blue: 0, alpha: 0.2)
-//        stackView.translatesAutoresizingMaskIntoConstraints = false
-//        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-////        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-//        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-//
-//        stackView.heightAnchor.constraint(equalToConstant: 400).isActive = true
-//        stackView.widthAnchor.constraint(equalToConstant: 600).isActive = true
+        let stackView = StackView()
+        view.addSubview(stackView)
+
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+
+        stackView.heightAnchor.constraint(equalToConstant: 400).isActive = true
+        stackView.widthAnchor.constraint(equalToConstant: 600).isActive = true
                 
-        let scrollView = TextEditor()
-        scrollView.textView.string = "        textView.setContentCompressionResistancePriority(.required, for: .vertical)        textView.setContentCompressionResistancePriority(.required, for: .vertical)"
-
-        view.addSubview(scrollView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        scrollView.setContentCompressionResistancePriority(.fittingSizeCompression, for: .vertical)
+        let te1 = TextEditor()
+        let te2 = TextEditor()
+        let te3 = TextEditor()
+        te2.textView.isEditable = false
+        te3.textView.isEditable = false
+        te2.textView.string = "First\nSecond\nThird"
+        te3.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
         
-        let tv2 = NSTextField(labelWithString: "Hello world 2")
-        let tv3 = NSTextField(labelWithString: "Hello world 3")
-        
-        tv2.drawsBackground = true
-        tv3.drawsBackground = true
-        
-        tv2.backgroundColor = .green
-        tv3.backgroundColor = .red
-        
-        view.addSubview(tv2)
-        view.addSubview(tv3)
-        
-//        stackView.addArrangedSubview(scrollView)
-//        stackView.addArrangedSubview(tv2)
-//        stackView.addArrangedSubview(tv3)
-        
-//        scrollView.autoresizingMask = [.width]
-        
-//        scrollView.translatesAutoresizingMaskIntoConstraints = false
-//        scrollView.leadingAnchor.constraint(equalTo: stackView.leadingAnchor).isActive = true
-//        scrollView.trailingAnchor.constraint(equalTo: stackView.trailingAnchor).isActive = true
-        
-//        tv3.translatesAutoresizingMaskIntoConstraints = false
-//        tv3.leadingAnchor.constraint(equalTo: stackView.leadingAnchor).isActive = true
-//        tv3.trailingAnchor.constraint(equalTo: stackView.trailingAnchor).isActive = true
-//
-//        tv2.translatesAutoresizingMaskIntoConstraints = false
-//        tv2.leadingAnchor.constraint(equalTo: stackView.leadingAnchor).isActive = true
-//        tv2.trailingAnchor.constraint(equalTo: stackView.trailingAnchor).isActive = true
+        stackView.addArrangedSubview(te1)
+        stackView.addArrangedSubview(te2)
+        stackView.addArrangedSubview(te3)
     }
-
-    override var representedObject: Any? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
-
 }
-
