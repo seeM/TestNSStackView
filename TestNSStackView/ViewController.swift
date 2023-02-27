@@ -68,10 +68,6 @@ class ScrollView: NSScrollView {
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override var intrinsicContentSize: NSSize {
-        return NSSize(width: -1, height: textView.intrinsicContentSize.width)
-    }
 }
 
 class TextEditor: NSView {
