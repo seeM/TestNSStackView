@@ -25,7 +25,7 @@ class BorderedTextView: NSTextView, NSTextViewDelegate {
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         let path = NSBezierPath(rect: bounds)
-        NSColor.white.setStroke()
+        NSColor.red.setStroke()
         path.stroke()
     }
     
@@ -73,6 +73,7 @@ class TextEditor: NSScrollView {
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.setContentCompressionResistancePriority(.required, for: .vertical)
         textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        textView.trailingAnchor.constraint(greaterThanOrEqualTo: scrollView.trailingAnchor).isActive = true
         textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
     }
@@ -124,5 +125,9 @@ class ViewController: NSViewController {
         stackView.addArrangedSubview(te1)
         stackView.addArrangedSubview(te2)
         stackView.addArrangedSubview(te3)
+        
+        te1.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
+        te2.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
+        te3.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
     }
 }
