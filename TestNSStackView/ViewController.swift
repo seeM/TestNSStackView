@@ -49,9 +49,16 @@ class TextEditor: NSView {
         scrollView.hasHorizontalScroller = false
         scrollView.horizontalScrollElasticity = .automatic
         scrollView.verticalScrollElasticity = .none
-        scrollView.drawsBackground = false
+        
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
 
+        scrollView.drawsBackground = false
         textView.drawsBackground = false
+        
         textView.isRichText = false
         textView.minSize = NSSize(width: 0, height: scrollView.bounds.height)
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
@@ -68,12 +75,6 @@ class TextEditor: NSView {
         textView.trailingAnchor.constraint(greaterThanOrEqualTo: scrollView.trailingAnchor).isActive = true
         textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
-        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -86,14 +87,9 @@ class TextEditor: NSView {
 }
 
 class StackView: NSStackView {
-    override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        orientation = .vertical
-        distribution = .gravityAreas
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func addArrangedSubview(_ view: NSView) {
+        super.addArrangedSubview(view)
+        view.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
     }
 }
 
@@ -102,15 +98,14 @@ class ViewController: NSViewController {
         super.viewDidLoad()
 
         let stackView = StackView()
+        stackView.orientation = .vertical
+        stackView.distribution = .gravityAreas
         view.addSubview(stackView)
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-
-        stackView.heightAnchor.constraint(equalToConstant: 400).isActive = true
-        stackView.widthAnchor.constraint(equalToConstant: 600).isActive = true
                 
         let te1 = TextEditor()
         let te2 = TextEditor()
@@ -121,9 +116,5 @@ class ViewController: NSViewController {
         stackView.addArrangedSubview(te1)
         stackView.addArrangedSubview(te2)
         stackView.addArrangedSubview(te3)
-        
-        te1.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
-        te2.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
-        te3.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
     }
 }
