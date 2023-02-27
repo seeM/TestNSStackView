@@ -7,7 +7,7 @@
 
 import Cocoa
 
-class BorderedTextView: NSTextView {
+class TextView: NSTextView {
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         let path = NSBezierPath(rect: bounds)
@@ -24,20 +24,25 @@ class BorderedTextView: NSTextView {
     override func didChangeText() {
         super.didChangeText()
         invalidateIntrinsicContentSize()
-        enclosingScrollView?.invalidateIntrinsicContentSize()
     }
 }
 
-class ScrollView: NSScrollView {
-    public var textView: BorderedTextView
+class TextEditor: NSView {
+    public var scrollView: NSScrollView
+    public var textView: NSTextView
     
-    override public init(frame frameRect: NSRect) {
-        textView = BorderedTextView()
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
+        let path = NSBezierPath(roundedRect: bounds, xRadius: 7, yRadius: 7)
+        NSColor(red: 0, green: 0, blue: 0, alpha: 0.06).setFill()
+        path.fill()
+    }
+    
+    override init(frame frameRect: NSRect) {
+        scrollView = NSScrollView()
+        textView = TextView()
         super.init(frame: frameRect)
-        let scrollView = self
-        let textView = scrollView.textView
-        
-        scrollView.setContentCompressionResistancePriority(.fittingSizeCompression, for: .vertical)
+        addSubview(scrollView)
         
         scrollView.borderType = .noBorder
         scrollView.hasVerticalScroller = false
@@ -45,7 +50,7 @@ class ScrollView: NSScrollView {
         scrollView.horizontalScrollElasticity = .automatic
         scrollView.verticalScrollElasticity = .none
         scrollView.drawsBackground = false
-                
+
         textView.drawsBackground = false
         textView.isRichText = false
         textView.minSize = NSSize(width: 0, height: scrollView.bounds.height)
@@ -63,27 +68,6 @@ class ScrollView: NSScrollView {
         textView.trailingAnchor.constraint(greaterThanOrEqualTo: scrollView.trailingAnchor).isActive = true
         textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-    }
-    
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class TextEditor: NSView {
-    public var scrollView: ScrollView
-    
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-        let path = NSBezierPath(roundedRect: bounds, xRadius: 7, yRadius: 7)
-        NSColor(red: 0, green: 0, blue: 0, alpha: 0.06).setFill()
-        path.fill()
-    }
-    
-    override init(frame frameRect: NSRect) {
-        scrollView = ScrollView()
-        super.init(frame: frameRect)
-        addSubview(scrollView)
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
@@ -131,10 +115,8 @@ class ViewController: NSViewController {
         let te1 = TextEditor()
         let te2 = TextEditor()
         let te3 = TextEditor()
-        te2.scrollView.textView.isEditable = false
-        te3.scrollView.textView.isEditable = false
-        te2.scrollView.textView.string = "First\nSecond\nThird"
-        te3.scrollView.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
+        te2.textView.string = "First\nSecond\nThird"
+        te3.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
         
         stackView.addArrangedSubview(te1)
         stackView.addArrangedSubview(te2)
