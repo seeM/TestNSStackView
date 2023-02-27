@@ -48,6 +48,38 @@ class TextEditor: NSScrollView {
     override public init(frame frameRect: NSRect) {
         textView = BorderedTextView()
         super.init(frame: frameRect)
+        let scrollView = self
+        let textView = scrollView.textView
+        
+        scrollView.borderType = .noBorder
+        scrollView.hasVerticalScroller = false
+        scrollView.hasHorizontalScroller = false
+        scrollView.horizontalScrollElasticity = .automatic
+        scrollView.verticalScrollElasticity = .none
+                
+        textView.isRichText = false
+        textView.minSize = NSSize(width: 0, height: scrollView.bounds.height)
+        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        textView.isVerticallyResizable = true
+        textView.isHorizontallyResizable = true
+        textView.textContainer?.widthTracksTextView = false
+        textView.textContainer?.heightTracksTextView = false
+        textView.textContainer?.size = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        
+        scrollView.documentView = textView
+        
+//        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.setContentCompressionResistancePriority(.fittingSizeCompression, for: .vertical)
+//        textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+//        textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+
+        scrollView.drawsBackground = true
+        scrollView.backgroundColor = NSColor(red: 1, green: 0, blue: 0, alpha: 1)
+        textView.drawsBackground = true
+        textView.backgroundColor = NSColor(red: 0, green: 1, blue: 0, alpha: 1)
+        textView.textStorage?.foregroundColor = .white
+
     }
     
     public required init?(coder: NSCoder) {
@@ -88,59 +120,29 @@ class ViewController: NSViewController {
 //
 //        stackView.heightAnchor.constraint(equalToConstant: 400).isActive = true
 //        stackView.widthAnchor.constraint(equalToConstant: 600).isActive = true
-        
+                
         let scrollView = TextEditor()
+        scrollView.textView.string = "        textView.setContentCompressionResistancePriority(.required, for: .vertical)        textView.setContentCompressionResistancePriority(.required, for: .vertical)"
+
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scrollView.setContentCompressionResistancePriority(.fittingSizeCompression, for: .vertical)
-//        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
-        let textView = scrollView.textView
-        textView.string = "        textView.setContentCompressionResistancePriority(.required, for: .vertical)        textView.setContentCompressionResistancePriority(.required, for: .vertical)"
+        let tv2 = NSTextField(labelWithString: "Hello world 2")
+        let tv3 = NSTextField(labelWithString: "Hello world 3")
         
-        scrollView.borderType = .noBorder
-        scrollView.hasVerticalScroller = false
-        scrollView.hasHorizontalScroller = false
-//        scrollView.horizontalScrollElasticity = .allowed
-        scrollView.verticalScrollElasticity = .none
-        
-        scrollView.drawsBackground = true
-        scrollView.backgroundColor = NSColor(red: 1, green: 0, blue: 0, alpha: 1)
-        
-        textView.isRichText = false
-        textView.minSize = NSSize(width: 0, height: scrollView.bounds.height)
-        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = true
-        textView.textStorage?.foregroundColor = .white
-        textView.textContainer?.widthTracksTextView = false
-        textView.textContainer?.heightTracksTextView = false
-        textView.textContainer?.size = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        
-        scrollView.documentView = textView
-        
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.setContentCompressionResistancePriority(.required, for: .vertical)
-        textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-//        textView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-
-        textView.drawsBackground = true
-        textView.backgroundColor = NSColor(red: 0, green: 1, blue: 0, alpha: 1)
-        
-//        let tv2 = NSTextField(labelWithString: "Hello world 2")
-//        let tv3 = NSTextField(labelWithString: "Hello world 3")
-        
-//        tv2.drawsBackground = true
-//        tv3.drawsBackground = true
+        tv2.drawsBackground = true
+        tv3.drawsBackground = true
         
 
-//        tv2.backgroundColor = .green
-//        tv3.backgroundColor = .red
+        tv2.backgroundColor = .green
+        tv3.backgroundColor = .red
+        
+//        view.addSubview(tv2)
+//        view.addSubview(tv3)
         
 //        stackView.addArrangedSubview(scrollView)
 //        stackView.addArrangedSubview(tv2)
