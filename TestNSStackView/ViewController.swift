@@ -68,10 +68,10 @@ class TextEditor: NSScrollView {
         
         scrollView.documentView = textView
         
-//        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.setContentCompressionResistancePriority(.fittingSizeCompression, for: .vertical)
-//        textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-//        textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.setContentCompressionResistancePriority(.required, for: .vertical)
+        textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
         textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
 
         scrollView.drawsBackground = true
@@ -137,12 +137,11 @@ class ViewController: NSViewController {
         tv2.drawsBackground = true
         tv3.drawsBackground = true
         
-
         tv2.backgroundColor = .green
         tv3.backgroundColor = .red
         
-//        view.addSubview(tv2)
-//        view.addSubview(tv3)
+        view.addSubview(tv2)
+        view.addSubview(tv3)
         
 //        stackView.addArrangedSubview(scrollView)
 //        stackView.addArrangedSubview(tv2)
