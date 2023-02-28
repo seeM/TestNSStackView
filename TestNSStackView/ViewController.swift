@@ -20,10 +20,6 @@ class TextView: NSTextView {
     }
 }
 
-class Scroller: NSScroller {
-    override class var isCompatibleWithOverlayScrollers: Bool { true }
-}
-
 class TextEditor: NSView {
     public var scrollView: NSScrollView
     public var textView: NSTextView
@@ -39,10 +35,6 @@ class TextEditor: NSView {
         scrollView.hasHorizontalScroller = true
         scrollView.horizontalScrollElasticity = .automatic
         scrollView.verticalScrollElasticity = .none
-        
-        let scroller = Scroller()
-        scrollView.horizontalScroller = scroller
-        scroller.scrollerStyle = .overlay
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: topAnchor).isActive = true
