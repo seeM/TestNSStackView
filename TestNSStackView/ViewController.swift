@@ -8,13 +8,6 @@
 import Cocoa
 
 class TextView: NSTextView {
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-        let path = NSBezierPath(rect: bounds)
-        NSColor.red.setStroke()
-        path.stroke()
-    }
-    
     override var intrinsicContentSize: NSSize {
         guard let textContainer = textContainer, let layoutManager = layoutManager else { return super.intrinsicContentSize }
         layoutManager.ensureLayout(for: textContainer)
@@ -27,16 +20,13 @@ class TextView: NSTextView {
     }
 }
 
+class Scroller: NSScroller {
+    override class var isCompatibleWithOverlayScrollers: Bool { true }
+}
+
 class TextEditor: NSView {
     public var scrollView: NSScrollView
     public var textView: NSTextView
-    
-    override func draw(_ dirtyRect: NSRect) {
-        super.draw(dirtyRect)
-        let path = NSBezierPath(roundedRect: bounds, xRadius: 7, yRadius: 7)
-        NSColor(red: 0, green: 0, blue: 0, alpha: 0.06).setFill()
-        path.fill()
-    }
     
     override init(frame frameRect: NSRect) {
         scrollView = NSScrollView()
@@ -44,19 +34,27 @@ class TextEditor: NSView {
         super.init(frame: frameRect)
         addSubview(scrollView)
         
-        scrollView.borderType = .noBorder
+        scrollView.autohidesScrollers = true
         scrollView.hasVerticalScroller = false
-        scrollView.hasHorizontalScroller = false
+        scrollView.hasHorizontalScroller = true
         scrollView.horizontalScrollElasticity = .automatic
         scrollView.verticalScrollElasticity = .none
         
+        let scroller = Scroller()
+        scrollView.horizontalScroller = scroller
+        scroller.scrollerStyle = .overlay
+        
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -5).isActive = true
-        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
+        scrollView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
 
-        scrollView.drawsBackground = false
+        scrollView.borderType = .lineBorder
+        scrollView.drawsBackground = true
+        scrollView.wantsLayer = true
+        scrollView.layer?.cornerRadius = 3
+        scrollView.backgroundColor = .clear
         textView.drawsBackground = false
         
         textView.isRichText = false
@@ -68,13 +66,24 @@ class TextEditor: NSView {
         textView.textContainer?.heightTracksTextView = false
         textView.textContainer?.size = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         
-        scrollView.documentView = textView
-        
+        // Wrap the text view in a container so that we can pad the top and bottom of the text view. I couldn't get textContainerInset to work for this.
+        let textViewContainer = NSView()
+        textViewContainer.addSubview(textView)
+
+        scrollView.documentView = textViewContainer
+
+        textViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        textViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        textViewContainer.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor).isActive = true
+        textViewContainer.trailingAnchor.constraint(greaterThanOrEqualTo: scrollView.contentView.trailingAnchor).isActive = true
+        textViewContainer.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor).isActive = true
+        textViewContainer.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor).isActive = true
+
         textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        textView.trailingAnchor.constraint(greaterThanOrEqualTo: scrollView.trailingAnchor).isActive = true
-        textView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        textView.leadingAnchor.constraint(equalTo: textViewContainer.leadingAnchor).isActive = true
+        textView.trailingAnchor.constraint(equalTo: textViewContainer.trailingAnchor).isActive = true
+        textView.topAnchor.constraint(equalTo: textViewContainer.topAnchor, constant: 5).isActive = true
+        textView.bottomAnchor.constraint(equalTo: textViewContainer.bottomAnchor, constant: -5).isActive = true
     }
     
     required init?(coder: NSCoder) {
@@ -103,18 +112,21 @@ class ViewController: NSViewController {
         view.addSubview(stackView)
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5).isActive = true
+        stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
                 
         let te1 = TextEditor()
         let te2 = TextEditor()
         let te3 = TextEditor()
         te2.textView.string = "First\nSecond\nThird"
-        te3.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
+        te3.textView.string = "This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line.\nThis is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line. This is a really long line."
         
         stackView.addArrangedSubview(te1)
         stackView.addArrangedSubview(te2)
         stackView.addArrangedSubview(te3)
+        
+        stackView.needsLayout = true
+        stackView.needsUpdateConstraints = true
     }
 }
